@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Educational Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        :root {
+            --accent: #0077b6;
+            --accent-dark: #023e8a;
+            --accent-light: #90e0ef;
+            --text: #222;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --submenu-bg: rgba(255, 255, 255, 0.5);
+            --submenu-hover: rgba(0, 119, 182, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
+            background: linear-gradient(135deg, #dff6fd, #ffffff);
+        }
+
+        .sidebar {
+            width: 390px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--accent-light);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .no-submenu{
+            margin-bottom: 20px;
+        }
+        
+        .sidebar img {
+            width: 80px;
+            margin: 20px auto 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu button {
+            background: rgba(195, 209, 237, 0.6);
+            border: none;
+            padding: 15px 14px;
+            text-align: left;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s ease;
+        }
+
+        .menu button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .menu button.active,
+        .menu button.opened {
+            background: var(--accent-dark);
+            color: white;
+        }
+
+        .submenu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+            max-height: 0;
+            padding-left: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+
+        .submenu::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 0;
+            height: 100%;
+            background: var(--accent);
+            width: 2px;
+        }
+
+        .submenu button {
+            font-size: 14px;
+            padding: 8px 12px;
+            background: var(--submenu-bg);
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s ease;
+        }
+
+        .submenu button:hover {
+            background: var(--submenu-hover);
+            color: var(--accent-dark);
+        }
+
+        .submenu button.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+        }
+
+        .main img.mobile-logo {
+            display: none;
+            width: 70px;
+            margin: 0 auto 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 6px;
+            text-align: center;
+        }
+
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: var(--text);
+            z-index: 999;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                z-index: 998;
+                width: 300px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .main img.mobile-logo {
+                display: block;
+            }
+
+            .main {
+                padding: 24px;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hamburger" id="hamburger">
+        <i class="fas fa-bars" id="hamburger-icon"></i>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <img src="school_logo.png" alt="Logo" />
+        <div class="menu">
+
+            <!-- Submenu Sections -->
+            <button class="has-submenu" data-title="Phase 1">Phase 1 <i class="fas fa-caret-down"></i></button>
+            <div class="submenu">
+                <button data-title="Attendance Report">Attendance Report</button>
+                <button data-title="Ticket Management">Ticket Management</button>
+                <button data-title="Assessment Management">Assessment Management</button>
+                <button data-title="Lab Utilization">Lab Utilization</button>
+            </div>
+
+            <button class="has-submenu" data-title="Phase 2">Phase 2 <i class="fas fa-caret-down"></i></button>
+            <div class="submenu">
+                <button data-title="Attendance Report">Attendance Report</button>
+                <button data-title="Ticket Management">Ticket Management</button>
+                <button data-title="Assessment Management">Assessment Management</button>
+                <button data-title="Lab Utilization">Lab Utilization</button>
+            </div>
+
+            <button class="has-submenu" data-title="Phase 3A">Phase 3A <i class="fas fa-caret-down"></i></button>
+            <div class="submenu">
+                <button data-title="Attendance Report">Attendance Report</button>
+                <button data-title="Ticket Management">Ticket Management</button>
+                <button data-title="Assessment Management">Assessment Management</button>
+                <button data-title="Lab Utilization">Lab Utilization</button>
+            </div>
+
+            <button class="has-submenu" data-title="Phase 3B">Phase 3B <i class="fas fa-caret-down"></i></button>
+            <div class="submenu">
+                <button data-title="Attendance Report">Attendance Report</button>
+                <button data-title="Ticket Management">Ticket Management</button>
+                <button data-title="Assessment Management">Assessment Management</button>
+                <button data-title="Lab Utilization">Lab Utilization</button>
+            </div>
+            
+            <button class="no-submenu" data-title="G.shala">G.shala</button>
+            <button class="no-submenu" data-title="Chrome Utils">Chrome Utils</button>
+            <button class="no-submenu" data-title="Projector Utils">Projector Utils</button>
+            <button class="no-submenu" data-title="Map">Map</button>
+            <button class="no-submenu" data-title="Overview">Overview</button>
+        </div>
+    </div>
+
+    <div class="main">
+        <img src="school_logo.png" alt="Logo" class="mobile-logo" />
+        <div class="title" id="pageTitle">Phase 1</div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburger = document.getElementById('hamburger');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const pageTitle = document.getElementById('pageTitle');
+
+        document.querySelectorAll('.has-submenu').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const submenu = trigger.nextElementSibling;
+                const isOpen = submenu.style.maxHeight && submenu.style.maxHeight !== "0px";
+                submenu.style.maxHeight = isOpen ? "0" : submenu.scrollHeight + "px";
+                trigger.classList.toggle('opened');
+                const icon = trigger.querySelector('i');
+                icon.classList.toggle('fa-caret-down');
+                icon.classList.toggle('fa-caret-up');
+                pageTitle.textContent = trigger.getAttribute('data-title');
+            });
+        });
+
+        document.querySelectorAll('.submenu button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.submenu button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const parent = btn.closest('.submenu').previousElementSibling.getAttribute('data-title');
+                pageTitle.textContent = `${parent} : ${btn.getAttribute('data-title')}`;
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('active');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                }
+            });
+        });
+
+        document.querySelectorAll('.no-submenu').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.submenu button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                pageTitle.textContent = btn.getAttribute('data-title');
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('active');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                }
+            });
+        });
+
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            hamburgerIcon.classList.toggle('fa-bars');
+            hamburgerIcon.classList.toggle('fa-times');
+        });
+
+        // Open Phase 1 submenu by default
+        const defaultTrigger = document.querySelector('.has-submenu');
+        const defaultSubmenu = defaultTrigger.nextElementSibling;
+        defaultSubmenu.style.maxHeight = defaultSubmenu.scrollHeight + "px";
+        defaultTrigger.classList.add('opened');
+        defaultTrigger.querySelector('i').classList.replace('fa-caret-down', 'fa-caret-up');
+    </script>
+</body>
+
+</html>
